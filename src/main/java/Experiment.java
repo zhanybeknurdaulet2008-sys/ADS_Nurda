@@ -1,38 +1,38 @@
 public class Experiment {
-    private Sorter sorter = new Sorter();
-    private Searcher searcher = new Searcher();
-    public long measureSortTime(int[] arr, String type) {
-        long start = System.nanoTime();
-        if ("basic".equals(type)) {
-            sorter.basicSort(arr);
-        } else {
-            sorter.advancedSort(arr);
-        }
-        long end = System.nanoTime();
-        return end - start;
+    public void runTraversals(Graph g) {
+        long bfsStart = System.nanoTime();
+        g.bfs(0);
+        long bfsEnd = System.nanoTime();
+        long dfsStart = System.nanoTime();
+        g.dfs(0);
+        long dfsEnd = System.nanoTime();
+        System.out.println("BFS Time: " + (bfsEnd - bfsStart) + " ns");
+        System.out.println("DFS Time: " + (dfsEnd - dfsStart) + " ns");
     }
-    public long measureSearchTime(int[] arr, int target) {
-        long start = System.nanoTime();
-        searcher.search(arr, target);
-        long end = System.nanoTime();
-        return end - start;
+    public void runMultipleTests() {
+        testGraph(10);
+        testGraph(30);
+        testGraph(100);
     }
-    public void runAllExperiments() {
-        int[] sizes = {10, 100, 1000};
-        for (int size : sizes) {
-            int[] arr = sorter.generateRandomArray(size);
-            int[] arrCopy1 = arr.clone();
-            int[] arrCopy2 = arr.clone();
-            long basicTime = measureSortTime(arrCopy1, "basic");
-            long advancedTime = measureSortTime(arrCopy2, "advanced");
-            sorter.advancedSort(arr);
-            int target = arr[size / 2];
-            long searchTime = measureSearchTime(arr, target);
-            System.out.println("Size: " + size);
-            System.out.println("Bubble Sort Time: " + basicTime);
-            System.out.println("Quick Sort Time: " + advancedTime);
-            System.out.println("Binary Search Time: " + searchTime);
-            System.out.println("------------------------");
+    private void testGraph(int size) {
+        System.out.println("\n===== Graph Size: " + size + " =====");
+        Graph graph = new Graph();
+        for (int i = 0; i < size; i++) {
+            graph.addVertex(new Vertex(i));
         }
+        for (int i = 0; i < size - 1; i++) {
+            graph.addEdge(i, i + 1);
+
+            if (i + 2 < size) {
+                graph.addEdge(i, i + 2);
+            }
+        }
+        if (size == 10) {
+            graph.printGraph();
+        }
+        runTraversals(graph);
+    }
+    public void printResults() {
+        System.out.println("\nExperiments completed successfully.");
     }
 }
